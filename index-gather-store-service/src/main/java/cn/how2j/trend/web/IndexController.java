@@ -12,8 +12,22 @@ import java.util.List;
 public class IndexController {
     @Autowired
     IndexService indexService;
+
+//    @GetMapping("/getCodes")
+//    public List<Index> get() throws Exception{
+//        return indexService.fetch_indexes_from_third_part();
+//    }
+    @GetMapping("/freshCodes")
+    public List<Index> fresh() throws Exception{
+        return indexService.fresh();
+    }
     @GetMapping("/getCodes")
     public List<Index> get() throws Exception{
-        return indexService.fetch_indexes_from_third_part();
+        return indexService.get();
+    }
+    @GetMapping("/removeCodes")
+    public String remove() throws Exception{
+        indexService.remove();
+        return "remove codes successfully";
     }
 }
