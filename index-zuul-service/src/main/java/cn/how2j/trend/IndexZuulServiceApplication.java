@@ -13,6 +13,7 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 @EnableDiscoveryClient
 public class IndexZuulServiceApplication {
     //  http://127.0.0.1:8031/api-codes/codes
+    //  http://127.0.0.1:8031/api-backtest/simulate/000300
     public static void main(String[] args) {
         int port = 8031;
         if(!NetUtil.isUsableLocalPort(port)){
