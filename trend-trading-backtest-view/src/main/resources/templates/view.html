@@ -57,6 +57,9 @@
                       chart4Profit.update();
                   });
                 },
+                changeParamWithFlushDate:function (){
+                    vue.simulate();
+                },
             }
         });
 
@@ -137,7 +140,7 @@
                 </span>
             </td>
             <td width="25%">
-                <select v-model="currentIndex" class="indexSelect form-control" @click="simulate">
+                <select v-model="currentIndex" class="indexSelect form-control" @change="changeParamWithFlushDate">
                     <option v-for="bean in indexes" :value="bean.code">
                         {{bean.name}}-({{bean.code}})
                     </option>
