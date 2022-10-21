@@ -2,6 +2,7 @@ package cn.how2j.trend.web;
 
 import cn.how2j.trend.pojo.IndexData;
 import cn.how2j.trend.pojo.Profit;
+import cn.how2j.trend.pojo.Trade;
 import cn.how2j.trend.service.BackTestService;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
@@ -38,12 +39,14 @@ public class BackTestController {
         float serviceCharge = 0f;
         Map<String,?> simulateResult = backTestService.simulate(ma,sellRate,buyRate,serviceCharge,allIndexDatas);
         List<Profit> profits = (List<Profit>) simulateResult.get("profits");
+        List<Trade> trades = (List<Trade>) simulateResult.get("trades");
 
         Map<String,Object> result = new HashMap<>();
         result.put("indexDatas",allIndexDatas);
         result.put("indexStartDate",indexStartDate);
         result.put("indexEndDate",indexEndDate);
         result.put("profits",profits);
+        result.put("trades",trades);
 
         return result;
     }

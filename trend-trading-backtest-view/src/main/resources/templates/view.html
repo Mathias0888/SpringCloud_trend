@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head th:include="include/header::html('趋势投资模拟回测')" ></head>
 
 <body>
@@ -24,6 +24,8 @@
 
             profits: [],
             profitValues: [],
+
+            trades: [],
 
         };
 
@@ -52,7 +54,8 @@
                       vue.dates = [];
                       vue.closePoints = [];
                       vue.profits = [];
-                      vue.profitValues = [],
+                      vue.profitValues = [];
+                      vue.trades = [];
 
                       vue.indexDatas = response.data.indexDatas;
                       vue.dates = new Array();
@@ -62,8 +65,8 @@
                       vue.indexEndDate = response.data.indexEndDate;
 
                       vue.profits = response.data.profits;
-                      console.log("vue.profits.length:"+vue.profits.length);
-                      console.log("vue.profits:"+vue.profits);
+
+                      vue.trades = response.data.trades;
 
                       for(i in vue.indexDatas){
                           var indexData = vue.indexDatas[i];
@@ -98,8 +101,8 @@
                     vue.startDate = vue.indexStartDate;
                     vue.endDate = vue.indexEndDate;
 
-                    console.log("vue.indexStartDate:"+vue.indexStartDate);
-                    console.log("vue.indexEndDate:"+vue.indexEndDate);
+                    // console.log("vue.indexStartDate:"+vue.indexStartDate);
+                    // console.log("vue.indexEndDate:"+vue.indexEndDate);
 
                     $('#date4Start').datepicker("destroy");
                     $('#date4Start').datepicker({
@@ -309,6 +312,55 @@
     <div class="div4chart" style="margin: 0px auto;width: 80%">
         <canvas class="canvas4Profit"></canvas>
     </div>
+
+    <div class="label label-warning">
+        交易明细
+    </div>
+
+    <table class="table table-striped table-bordered table-condensed table-hover">
+        <thead>
+        <th>盈/亏</th>
+        <th>购买日期</th>
+        <th>购买盘点</th>
+        <th>出售日期</th>
+        <th>出售盘点</th>
+        <th>盈亏比率</th>
+        <th>1000元投资收益</th>
+        </thead>
+        <tbody>
+        <tr v-for="bean in trades">
+            <td>
+                <span v-if="bean.sellClosePoint>bean.buyClosePoint" class="label label-danger">
+                    盈利
+                </span>
+                <span v-if="bean.sellClosePoint<=bean.buyClosePoint" class="label label-success">
+                    亏损
+                </span>
+            </td>
+            <td>{{bean.buyDate}}</td>
+            <td>{{bean.buyClosePoint}}</td>
+            <td>{{bean.sellDate}}</td>
+            <td>
+                <span v-if="bean.sellClosePoint==0">n/a</span>
+                <span v-if="bean.sellClosePoint!=0">{{bean.sellClosePoint}}</span>
+            </td>
+            <td>
+                <span v-if="bean.sellClosePoint==0">n/a</span>
+                <span class="label" v-bind:class="{
+                    'label-danger': bean.sellClosePoint>bean.buyClosePoint,
+                    'label-success': bean.sellClosePoint<=bean.buyClosePoint
+                }" v-if="bean.sellClosePoint!=0">
+                    {{(bean.sellClosePoint-bean.buyClosePoint)*100/bean.buyClosePoint | formatNumberFilter(2)}}%
+                </span>
+            </td>
+            <td>
+                <span v-if="bean.sellClosePoint==0">n/a</span>
+                <span v-if="bean.sellClosePoint!=0">{{bean.rate*1000 | formatMoneyFilter}}</span>
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
 </div>
 
 <div th:replace="include/footer::html"></div>
