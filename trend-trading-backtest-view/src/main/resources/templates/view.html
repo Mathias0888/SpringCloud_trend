@@ -22,6 +22,9 @@
             startDate: null,
             endDate: null,
 
+            profits: [],
+            profitValues: [],
+
         };
 
         //ViewModel
@@ -48,6 +51,8 @@
                       vue.indexDatas = [];
                       vue.dates = [];
                       vue.closePoints = [];
+                      vue.profits = [];
+                      vue.profitValues = [],
 
                       vue.indexDatas = response.data.indexDatas;
                       vue.dates = new Array();
@@ -56,15 +61,23 @@
                       vue.indexStartDate = response.data.indexStartDate;
                       vue.indexEndDate = response.data.indexEndDate;
 
+                      vue.profits = response.data.profits;
+                      console.log("vue.profits.length:"+vue.profits.length);
+                      console.log("vue.profits:"+vue.profits);
+
                       for(i in vue.indexDatas){
                           var indexData = vue.indexDatas[i];
                           vue.dates.push(indexData.date);
                           vue.closePoints.push(indexData.closePoint);
+
+                          var profit = vue.profits[i];
+                          vue.profitValues.push(profit.value);
                       }
 
                       chart4Profit.config.data.labels = vue.dates;
                       chart4Profit.config.data.datasets[0].label = vue.currentIndex;
                       chart4Profit.config.data.datasets[0].data = vue.closePoints;
+                      chart4Profit.config.data.datasets[1].data = vue.profitValues;
                       chart4Profit.update();
 
                       if(vue.flushDate)
@@ -170,6 +183,16 @@
                         data: [],
                         borderColor: '#FF4040',
                         backdropColor: '#FF4040',
+                        borderWidth: 1.2,
+                        pointRadius: 0,
+                        fill: false,
+                        lineTension: 0,
+                    },
+                    {
+                        label: '趋势投资',
+                        data: [],
+                        borderColor: '#5D98C8',
+                        backdropColor: '#5D98C8',
                         borderWidth: 1.2,
                         pointRadius: 0,
                         fill: false,
