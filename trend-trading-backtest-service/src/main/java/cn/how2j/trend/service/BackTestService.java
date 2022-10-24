@@ -4,6 +4,8 @@ import cn.how2j.trend.client.IndexDataClient;
 import cn.how2j.trend.pojo.IndexData;
 import cn.how2j.trend.pojo.Profit;
 import cn.how2j.trend.pojo.Trade;
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -132,5 +134,19 @@ public class BackTestService {
         }
         avg = sum/(now-start);
         return avg;
+    }
+
+    public float getYear(List<IndexData> allIndexDatas){
+        float years;
+        String sDateStart = allIndexDatas.get(0).getDate();
+        String sDateEnd = allIndexDatas.get(allIndexDatas.size()-1).getDate();
+
+        Date dateStart = DateUtil.parse(sDateStart);
+        Date dateEnd = DateUtil.parse(sDateEnd);
+
+        long days = DateUtil.between(dateStart,dateEnd, DateUnit.DAY);
+        years = days/365f;
+
+        return years;
     }
 }
