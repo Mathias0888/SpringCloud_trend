@@ -31,7 +31,12 @@
             indexIncomeTotal: 0,
             indexIncomeAnnual: 0,
             trendIncomeTotal: 0,
-            trendIncomeAnnual: 0
+            trendIncomeAnnual: 0,
+
+            winCount: 0,
+            lossCount: 0,
+            avgWinRate: 0,
+            avgLossRate: 0,
 
         };
 
@@ -78,7 +83,12 @@
                       vue.indexIncomeTotal = response.data.indexIncomeTotal;
                       vue.indexIncomeAnnual = response.data.indexIncomeAnnual;
                       vue.trendIncomeTotal = response.data.trendIncomeTotal;
-                      vue.trendIncomeAnnual = response.data.trendIncomeAnnual
+                      vue.trendIncomeAnnual = response.data.trendIncomeAnnual;
+
+                      vue.winCount = response.data.winCount;
+                      vue.lossCount = response.data.lossCount;
+                      vue.avgWinRate = response.data.avgWinRate;
+                      vue.avgLossRate = response.data.avgLossRate;
 
                       for(i in vue.indexDatas){
                           var indexData = vue.indexDatas[i];
@@ -361,6 +371,43 @@
         </tr>
         </tbody>
 
+    </table>
+
+    <div class="label label-warning">
+        交易统计
+    </div>
+    <table class="table table-bordered table-condensed">
+        <thead>
+        <th align="center" colspan="2">
+            趋势投资盈亏统计
+        </th>
+        </thead>
+        <tbody>
+        <tr>
+            <td width="50%">总共交易次数</td>
+            <td>{{winCount+lossCount}}</td>
+        </tr>
+        <tr>
+            <td>盈利交易次数</td>
+            <td>{{winCount}}</td>
+        </tr>
+        <tr>
+            <td>平均盈利比率</td>
+            <td>{{avgWinRate*100|formatNumberFilter(2)}}%</td>
+        </tr>
+        <tr>
+            <td>亏损交易次数</td>
+            <td>{{lossCount}}</td>
+        </tr>
+        <tr>
+            <td>平均亏损比率</td>
+            <td>{{avgLossRate*100|formatNumberFilter(2)}}%</td>
+        </tr>
+        <tr>
+            <td>胜率</td>
+            <td>{{(winCount/(winCount+lossCount))*100|formatNumberFilter(2)}}%</td>
+        </tr>
+        </tbody>
     </table>
 
     <div class="label label-warning">

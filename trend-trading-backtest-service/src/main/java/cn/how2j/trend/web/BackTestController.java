@@ -47,6 +47,11 @@ public class BackTestController {
         float trendIncomeTotal = (profits.get(profits.size()-1).getValue()-profits.get(0).getValue())/profits.get(0).getValue();
         float trendIncomeAnnual = (float) Math.pow(1+trendIncomeTotal,1/years)-1;
 
+        int winCount = (Integer)simulateResult.get("winCount");
+        int lossCount = (Integer)simulateResult.get("lossCount");
+        float avgWinRate = (Float)simulateResult.get("avgWinRate");
+        float avgLossRate = (Float)simulateResult.get("avgLossRate");
+
         Map<String,Object> result = new HashMap<>();
         result.put("indexDatas",allIndexDatas);
         result.put("indexStartDate",indexStartDate);
@@ -58,6 +63,11 @@ public class BackTestController {
         result.put("indexIncomeAnnual",indexIncomeAnnual);
         result.put("trendIncomeTotal",trendIncomeTotal);
         result.put("trendIncomeAnnual",trendIncomeAnnual);
+
+        result.put("winCount",winCount);
+        result.put("lossCount",lossCount);
+        result.put("avgWinRate",avgWinRate);
+        result.put("avgLossRate",avgLossRate);
 
         return result;
     }
