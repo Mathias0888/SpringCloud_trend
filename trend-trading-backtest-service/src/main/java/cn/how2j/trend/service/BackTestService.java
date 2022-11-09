@@ -1,11 +1,14 @@
 package cn.how2j.trend.service;
 
 import cn.how2j.trend.client.IndexDataClient;
+import cn.how2j.trend.pojo.AnnualProfit;
 import cn.how2j.trend.pojo.IndexData;
 import cn.how2j.trend.pojo.Profit;
 import cn.how2j.trend.pojo.Trade;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,7 +69,7 @@ public class BackTestService {
                         Trade trade = new Trade();
                         trade.setBuyDate(indexData.getDate());
                         trade.setBuyClosePoint(indexData.getClosePoint());
-                        trade.setSellDate("n/a");
+                            trade.setSellDate("n/a");
                         trade.setSellClosePoint(0);
                         trades.add(trade);
                     }
@@ -114,6 +117,8 @@ public class BackTestService {
         avgWinRate = totalWinRate/winCount;
         avgLossRate = totalLossRate/lossCount;
 
+        List<AnnualProfit> annualProfits = caculateAnnualProfits(indexDatas,profits);
+
         Map<String,Object> map = new HashMap<>();
         map.put("profits",profits);
         map.put("trades",trades);
@@ -123,6 +128,7 @@ public class BackTestService {
         map.put("avgWinRate",avgWinRate);
         map.put("avgLossRate",avgLossRate);
 
+        map.put("annualProfits",annualProfits);
         return map;
     }
 
@@ -173,4 +179,72 @@ public class BackTestService {
 
         return years;
     }
+
+    private List<AnnualProfit> caculateAnnualProfits(List<IndexData> indexDatas, List<Profit> profits){
+        List<AnnualProfit> result = new ArrayList<>();
+        String strStartDate = indexDatas.get(0).getDate();
+        String strEndDate = indexDatas.get(indexDatas.size()-1).getDate();
+
+        Date startDate = DateUtil.parse(strStartDate);
+        Date endDate = DateUtil.parse(strEndDate);
+
+        int startYear = DateUtil.year(startDate);
+        int endYear = DateUtil.year(endDate);
+
+        for(int year = startYear; year <= endYear; year++){
+            AnnualProfit annualProfit = new AnnualProfit();
+            annualProfit.setYear(year);
+
+            float indexIncome = getIndexIncome(year,indexDatas);
+            float trendIncome = getTrendIncome(year,profits);
+            annualProfit.setIndexIncome(indexIncome);
+            annualProfit.setTrendIncome(trendIncome);
+            result.add(annualProfit);
+        }
+        return result;
+    }
+
+    private float getIndexIncome(int year, List<IndexData> indexDatas){
+        IndexData first = null;
+        IndexData last = null;
+
+        for(IndexData indexData:indexDatas){
+            String strDate = indexData.getDate();
+            int currentYear = getYear(strDate);
+
+            if(currentYear == year){
+                if(null == first)
+                    first = indexData;
+                last = indexData;
+            }
+        }
+        return (last.getClosePoint()-first.getClosePoint())/first.getClosePoint();
+    }
+
+    private float getTrendIncome(int year, List<Profit> profits){
+        Profit first = null;
+        Profit last = null;
+
+        for(Profit profit:profits){
+            String strDate = profit.getDate();
+            int currentYear = getYear(strDate);
+
+            if(currentYear == year){
+                if(null == first)
+                    first = profit;
+                last = profit;
+            }
+
+            if (currentYear > year)
+                break;
+        }
+        return (last.getValue()- first.getValue())/ first.getValue();
+    }
+
+    private int getYear(String date){
+        String strYear = StrUtil.subBefore(date,"-",false);
+        return Convert.toInt(strYear);
+    }
+
+
 }

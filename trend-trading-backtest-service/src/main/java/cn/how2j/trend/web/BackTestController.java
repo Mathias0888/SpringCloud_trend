@@ -1,5 +1,6 @@
 package cn.how2j.trend.web;
 
+import cn.how2j.trend.pojo.AnnualProfit;
 import cn.how2j.trend.pojo.IndexData;
 import cn.how2j.trend.pojo.Profit;
 import cn.how2j.trend.pojo.Trade;
@@ -7,7 +8,6 @@ import cn.how2j.trend.service.BackTestService;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,6 +52,8 @@ public class BackTestController {
         float avgWinRate = (Float)simulateResult.get("avgWinRate");
         float avgLossRate = (Float)simulateResult.get("avgLossRate");
 
+        List<AnnualProfit> annualProfits = (List<AnnualProfit>) simulateResult.get("annualProfits");
+
         Map<String,Object> result = new HashMap<>();
         result.put("indexDatas",allIndexDatas);
         result.put("indexStartDate",indexStartDate);
@@ -68,6 +70,8 @@ public class BackTestController {
         result.put("lossCount",lossCount);
         result.put("avgWinRate",avgWinRate);
         result.put("avgLossRate",avgLossRate);
+
+        result.put("annualProfits",annualProfits);
 
         return result;
     }
