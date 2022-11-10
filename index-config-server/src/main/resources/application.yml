@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: index-config-server
+  cloud:
+    config:
+      label: master
+      server:
+        git:
+          uri: https://github.com/Mathias0888/trendConfig/
+          searchPaths: respo
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
