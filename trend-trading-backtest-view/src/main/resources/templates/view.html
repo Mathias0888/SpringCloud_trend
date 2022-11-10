@@ -48,6 +48,8 @@
             buyThreshold: 1.01,
             sellThreshold: 0.99,
 
+            serviceCharge: 0.0,
+
         };
 
         //ViewModel
@@ -69,7 +71,7 @@
                     });
                 },
                 simulate:function (){
-                  var url = "http://127.0.0.1:8031/api-backtest/simulate/"+vue.currentIndex+"/"+vue.ma+"/"+vue.buyThreshold+"/"+vue.sellThreshold+"/"+vue.startDate+"/"+vue.endDate+"/";
+                  var url = "http://127.0.0.1:8031/api-backtest/simulate/"+vue.currentIndex+"/"+vue.ma+"/"+vue.buyThreshold+"/"+vue.sellThreshold+"/"+vue.serviceCharge+"/"+vue.startDate+"/"+vue.endDate+"/";
                   axios.get(url).then(function (response){
                       vue.indexDatas = [];
                       vue.dates = [];
@@ -418,6 +420,21 @@
             <td>
                 <select class="form-control" @change="changeParam" v-model="sellThreshold">
                     <option v-for="i in 10" :value="1-i/100">{{1-i/100|formatNumberFilter(2)}}</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span data-toggle="tooltip" data-placement="top" title="每一笔交易都会有手续费，一般来说手续费都不高，千分之1.5左右，默认是没有计算手续费的">
+                    手续费：<span class="glyphicon glyphicon-question-sign"></span>
+                </span>
+            </td>
+            <td>
+                <select class="form-control" @change="changeParam" v-model="serviceCharge">
+                    <option value="0">无</option>
+                    <option value="0.001">0.1%</option>
+                    <option value="0.0015">0.15%</option>
+                    <option value="0.002">0.2%</option>
                 </select>
             </td>
         </tr>
